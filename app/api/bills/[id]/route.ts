@@ -1,24 +1,33 @@
-import { NextResponse } from "next/server";
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
-import { connectDB } from "@/lib/db";
+import { connectDB }
+  from "@/lib/db";
 
-import Bill from "@/models/Bill";
+import Bill
+  from "@/models/Bill";
 
 export async function DELETE(
-  req: Request,
-  {
-    params,
-  }: {
-    params: {
+  req: NextRequest,
+
+  context: {
+    params: Promise<{
       id: string;
-    };
+    }>;
   }
 ) {
+
   try {
+
     await connectDB();
 
+    const { id } =
+      await context.params;
+
     await Bill.findByIdAndDelete(
-      params.id
+      id
     );
 
     return NextResponse.json({
@@ -26,6 +35,7 @@ export async function DELETE(
     });
 
   } catch (error) {
+
     return NextResponse.json(
       {
         error:
