@@ -9,32 +9,54 @@ export default function LoginForm() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin =
+  async () => {
+
     setLoading(true);
+
     setError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
 
-      if (res.ok) {
-        window.location.href = "/dashboard";
+      const res =
+        await signIn(
+          "credentials",
+          {
+            email:
+              form.email,
+
+            password:
+              form.password,
+
+            redirect: false,
+          }
+        );
+
+      if (
+        res?.error
+      ) {
+
+        setError(
+          "Invalid credentials"
+        );
+
       } else {
-        const data = await res.json();
-        setError(data.message || "Invalid credentials");
+
+        window.location.href =
+          "/dashboard";
       }
+
     } catch {
-      setError("Server error");
+
+      setError(
+        "Server error"
+      );
+
     } finally {
+
       setLoading(false);
     }
   };
-
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
     await signIn("google", {

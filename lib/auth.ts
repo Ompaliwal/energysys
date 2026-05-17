@@ -1,7 +1,11 @@
-// lib/auth.ts
 import { verifyToken } from "./jwt";
 
-export function getUserFromToken(token: string) {
+import { rolePermissions } from "./permissions";
+
+export function getUserFromToken(
+  token: string
+) {
+
   try {
     return verifyToken(token);
   } catch {
@@ -9,7 +13,36 @@ export function getUserFromToken(token: string) {
   }
 }
 
-export function authorize(user: any, allowedRoles: string[]) {
-  if (!user) return false;
-  return allowedRoles.includes(user.role);
+export function authorize(
+  user: any,
+  allowedRoles: string[]
+) {
+
+  if (!user)
+    return false;
+
+  return allowedRoles.includes(
+    user.role
+  );
+}
+
+export function hasAccess(
+  role: string,
+  pathname: string
+) {
+
+  const allowedRoutes =
+    rolePermissions[
+      role as keyof typeof rolePermissions
+    ];
+
+  if (!allowedRoutes)
+    return false;
+
+  return allowedRoutes.some(
+    (route) =>
+      pathname.startsWith(
+        route
+      )
+  );
 }
