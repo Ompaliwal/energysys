@@ -9,7 +9,7 @@ import { connectDB }
 import Payment
   from "@/models/Payment";
 
-export async function DELETE(
+export async function GET(
   req: NextRequest,
 
   context: {
@@ -26,20 +26,38 @@ export async function DELETE(
     const { id } =
       await context.params;
 
-    await Payment.findByIdAndDelete(
-      id
-    );
+    const payment =
+      await Payment.findById(id)
+        .populate(
+          "consumerId"
+        )
+        .populate(
+          "billId"
+        );
 
-    return NextResponse.json({
-      success: true,
-    });
+    if (!payment) {
+
+      return NextResponse.json(
+        {
+          error:
+            "Payment not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    return NextResponse.json(
+      payment
+    );
 
   } catch (error) {
 
     return NextResponse.json(
       {
         error:
-          "Failed to delete payment",
+          "Failed to fetch receipt",
       },
       {
         status: 500,
