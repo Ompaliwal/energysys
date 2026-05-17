@@ -1,27 +1,38 @@
-import { NextRequest, NextResponse } from "next/server";
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
-import { connectDB } from "@/lib/db";
+import { connectDB }
+  from "@/lib/db";
 
-import Meter from "@/models/Meter";
+import Meter
+  from "@/models/Meter";
 
+// UPDATE METER
 export async function PUT(
   req: NextRequest,
-  {
-    params,
-  }: {
-    params: {
+
+  context: {
+    params: Promise<{
       id: string;
-    };
+    }>;
   }
 ) {
+
   try {
+
     await connectDB();
 
-    const body = await req.json();
+    const { id } =
+      await context.params;
+
+    const body =
+      await req.json();
 
     const updatedMeter =
       await Meter.findByIdAndUpdate(
-        params.id,
+        id,
         body,
         {
           new: true,
@@ -33,9 +44,11 @@ export async function PUT(
     );
 
   } catch (error) {
+
     return NextResponse.json(
       {
-        error: "Failed to update meter",
+        error:
+          "Failed to update meter",
       },
       {
         status: 500,
@@ -44,21 +57,26 @@ export async function PUT(
   }
 }
 
+// DELETE METER
 export async function DELETE(
   req: NextRequest,
-  {
-    params,
-  }: {
-    params: {
+
+  context: {
+    params: Promise<{
       id: string;
-    };
+    }>;
   }
 ) {
+
   try {
+
     await connectDB();
 
+    const { id } =
+      await context.params;
+
     await Meter.findByIdAndDelete(
-      params.id
+      id
     );
 
     return NextResponse.json({
@@ -66,9 +84,11 @@ export async function DELETE(
     });
 
   } catch (error) {
+
     return NextResponse.json(
       {
-        error: "Failed to delete meter",
+        error:
+          "Failed to delete meter",
       },
       {
         status: 500,

@@ -1,33 +1,54 @@
-import { NextRequest, NextResponse } from "next/server";
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
-import { connectDB } from "@/lib/db";
+import { connectDB }
+  from "@/lib/db";
 
-import Consumer from "@/models/Consumer";
+import Consumer
+  from "@/models/Consumer";
 
+// UPDATE CONSUMER
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+
+  context: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ) {
+
   try {
+
     await connectDB();
 
-    const body = await req.json();
+    const { id } =
+      await context.params;
+
+    const body =
+      await req.json();
 
     const updatedConsumer =
       await Consumer.findByIdAndUpdate(
-        params.id,
+        id,
         body,
         {
           new: true,
         }
       );
 
-    return NextResponse.json(updatedConsumer);
+    return NextResponse.json(
+      updatedConsumer
+    );
 
   } catch (error) {
+
     return NextResponse.json(
       {
-        error: "Failed to update consumer",
+        error:
+          "Failed to update consumer",
       },
       {
         status: 500,
@@ -36,23 +57,38 @@ export async function PUT(
   }
 }
 
+// DELETE CONSUMER
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+
+  context: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ) {
+
   try {
+
     await connectDB();
 
-    await Consumer.findByIdAndDelete(params.id);
+    const { id } =
+      await context.params;
+
+    await Consumer.findByIdAndDelete(
+      id
+    );
 
     return NextResponse.json({
       success: true,
     });
 
   } catch (error) {
+
     return NextResponse.json(
       {
-        error: "Failed to delete consumer",
+        error:
+          "Failed to delete consumer",
       },
       {
         status: 500,
