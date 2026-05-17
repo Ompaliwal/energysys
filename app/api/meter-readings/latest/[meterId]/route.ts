@@ -1,26 +1,30 @@
-import { NextResponse } from "next/server";
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
-import { connectDB } from "@/lib/db";
+import { connectDB }
+  from "@/lib/db";
 
-import MeterReading from "@/models/MeterReading";
+import MeterReading
+  from "@/models/MeterReading";
 
 export async function GET(
-  req: Request,
-  {
-    params,
-  }: {
+  req: NextRequest,
+
+  context: {
     params: Promise<{
       meterId: string;
     }>;
   }
 ) {
+
   try {
 
     await connectDB();
 
-    // ✅ NEXT 15 FIX
     const { meterId } =
-      await params;
+      await context.params;
 
     const latestReading =
       await MeterReading.findOne({

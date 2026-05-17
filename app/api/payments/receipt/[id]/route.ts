@@ -1,19 +1,24 @@
-import { NextResponse } from "next/server";
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
-import { connectDB } from "@/lib/db";
+import { connectDB }
+  from "@/lib/db";
 
-import Payment from "@/models/Payment";
+import Payment
+  from "@/models/Payment";
 
-import jsPDF from "jspdf";
+import jsPDF
+  from "jspdf";
 
 export async function GET(
-  req: Request,
-  {
-    params,
-  }: {
-    params: {
+  req: NextRequest,
+
+  context: {
+    params: Promise<{
       id: string;
-    };
+    }>;
   }
 ) {
 
@@ -21,14 +26,19 @@ export async function GET(
 
     await connectDB();
 
+    const { id } =
+      await context.params;
+
     const payment =
-      await Payment.findById(
-        params.id
-      )
+      await Payment.findById(id)
 
-        .populate("consumerId")
+        .populate(
+          "consumerId"
+        )
 
-        .populate("billId");
+        .populate(
+          "billId"
+        );
 
     if (!payment) {
 
