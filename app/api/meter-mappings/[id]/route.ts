@@ -1,24 +1,33 @@
-import { NextRequest, NextResponse } from "next/server";
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
-import { connectDB } from "@/lib/db";
+import { connectDB }
+  from "@/lib/db";
 
-import MeterMapping from "@/models/MeterMapping";
+import MeterMapping
+  from "@/models/MeterMapping";
 
 export async function DELETE(
   req: NextRequest,
-  {
-    params,
-  }: {
-    params: {
+
+  context: {
+    params: Promise<{
       id: string;
-    };
+    }>;
   }
 ) {
+
   try {
+
     await connectDB();
 
+    const { id } =
+      await context.params;
+
     await MeterMapping.findByIdAndDelete(
-      params.id
+      id
     );
 
     return NextResponse.json({
@@ -26,6 +35,7 @@ export async function DELETE(
     });
 
   } catch (error) {
+
     return NextResponse.json(
       {
         error:
